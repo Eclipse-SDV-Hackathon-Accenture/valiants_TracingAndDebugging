@@ -24,11 +24,9 @@ int main(int argc, char** argv)
 
   // Ask the user to input his name
 
-  std::cout << "Please enter your name: ";
 
-  std::string name;
-
-  std::getline(std::cin, name);
+  std::string name = "Q4";
+  std::string message = "I am Saqib's fancy car";
 
 
   unsigned int id = 0;
@@ -43,12 +41,6 @@ int main(int argc, char** argv)
   {
 
     // Let the user input a message
-
-    std::cout << "Type the message you want to send: ";
-
-    std::string message;
-
-    std::getline(std::cin, message);
 
 
     // Create a protobuf message object
