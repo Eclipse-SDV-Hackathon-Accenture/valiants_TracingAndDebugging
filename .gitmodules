@@ -1,0 +1,3 @@
+[submodule "ecal"]
+	path = ecal
+	url = https://github.com/niktolis/ecal.git
