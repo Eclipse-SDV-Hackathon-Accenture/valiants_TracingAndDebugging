@@ -16,7 +16,7 @@ find_package(eCAL REQUIRED)
 find_package(Protobuf REQUIRED)
 
 
-set(source_files src/main.cpp src/val_pub.cpp src/val_sub.cpp)
+set(source_files src/val_sub.cpp)
 
 
 set(protobuf_files

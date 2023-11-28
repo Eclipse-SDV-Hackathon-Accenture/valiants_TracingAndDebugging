@@ -60,6 +60,8 @@ int main(int argc, char** argv)
 
     std::cout << "Sent message!" << std::endl << std::endl;
 
+    eCAL::Process::SleepMS(1000);
+
   }
 
 
