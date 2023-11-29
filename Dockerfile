@@ -42,6 +42,6 @@ RUN echo "#!/usr/bin/bash" >> startup.sh
 RUN echo "./usr/local/bin/tstVehPub &" >> startup.sh
 RUN echo "./usr/local/bin/tstVehSub" >> startup.sh
 RUN chmod a+x startup.sh
-
+EXPOSE 4317
 ENTRYPOINT [""]
 CMD /startup.sh

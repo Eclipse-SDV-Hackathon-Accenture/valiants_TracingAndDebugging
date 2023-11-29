@@ -1,8 +1,24 @@
 # valiants_TracingAndDebugging
 team repository for tracing and debugging SDV Hackathon Challenge
 
-In order to run publisher and subscriber app build and run the Docker container:
+## Prerequisites
+
+Docker is installed
+
+## How to run the demo:
+
+1. Jaeger Trace service
+
+Open the new terminal and run:
 ```
-valiants_TracingAndDebugging % docker build -t <container_name>  . 
-valiants_TracingAndDebugging % docker run <container_name>  
+./start_jaeger.sh
+```
+
+2. Publisher and subscriber app
+
+Open the neew terminal and run publisher/subscriber app:
+
+```
+docker build -t <container_name>  . 
+docker run --net=host <container_name>  
 ```
