@@ -10,23 +10,23 @@
 #include "opentelemetry/trace/provider.h"
 
 #ifdef BAZEL_BUILD
-#  include "examples/common/foo_library/foo_library.h"
+#include "examples/common/foo_library/foo_library.h"
 #else
-#  include "foo_library/foo_library.h"
+#include "foo_library/foo_library.h"
 #endif
 
-namespace trace_api      = opentelemetry::trace;
-namespace trace_sdk      = opentelemetry::sdk::trace;
+namespace trace_api = opentelemetry::trace;
+namespace trace_sdk = opentelemetry::sdk::trace;
 
-namespace
-{
-void InitTracer()
-{
+namespace {
+void InitTracer() {
   opentelemetry::exporter::otlp::OtlpGrpcExporterOptions options;
   options.endpoint = "http://localhost:4317";
   options.use_ssl_credentials = false;
-  auto exporter = std::unique_ptr<trace_sdk::SpanExporter>(new opentelemetry::exporter::otlp::OtlpGrpcExporter(options));
-  auto processor = trace_sdk::SimpleSpanProcessorFactory::Create(std::move(exporter));
+  auto exporter = std::unique_ptr<trace_sdk::SpanExporter>(
+      new opentelemetry::exporter::otlp::OtlpGrpcExporter(options));
+  auto processor =
+      trace_sdk::SimpleSpanProcessorFactory::Create(std::move(exporter));
   std::shared_ptr<opentelemetry::trace::TracerProvider> provider =
       trace_sdk::TracerProviderFactory::Create(std::move(processor));
 
@@ -34,21 +34,19 @@ void InitTracer()
   trace_api::Provider::SetTracerProvider(provider);
 }
 
-void CleanupTracer()
-{
+void CleanupTracer() {
   std::shared_ptr<opentelemetry::trace::TracerProvider> none;
   trace_api::Provider::SetTracerProvider(none);
 }
 }  // namespace
 
-int main()
-{
+int main() {
   // Removing this line will leave the default noop TracerProvider in place.
-  for(;;) {
-  InitTracer();
+  for (;;) {
+    InitTracer();
 
-  foo_library();
+    foo_library();
 
-  CleanupTracer();
+    CleanupTracer();
   }
 }
