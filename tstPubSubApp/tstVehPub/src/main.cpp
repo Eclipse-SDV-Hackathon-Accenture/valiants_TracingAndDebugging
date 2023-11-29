@@ -57,14 +57,6 @@ int main(int argc, char** argv)
 
 {
 
-  //creates a span and sets its name
-  auto span = tracer->StartSpan("PublisherTrace");
-  spac->AddEvent("Start time:")
-  
-  // marks a span as active and returns a Scope object
-  auto scope = tracer->WithActiveSpan(span);
-
-
 
   // Initialize eCAL and create a protobuf publisher
 
@@ -116,9 +108,7 @@ int main(int argc, char** argv)
     eCAL::Process::SleepMS(1000);
 
   }
-  
-  // end span scope
-  span->End();
+
   // finalize eCAL API
 
   eCAL::Finalize();
