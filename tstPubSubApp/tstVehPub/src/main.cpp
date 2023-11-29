@@ -106,7 +106,7 @@ int main(int argc, char** argv)
 
     test_message.set_msg (message);
 
-    test_message.set_id  (id++);
+    test_message.set_id  (id);
 
 
     // Send the message
@@ -116,6 +116,8 @@ int main(int argc, char** argv)
     publisher.Send(test_message);
     std::cout << appname << ": Sent message!" << std::endl << std::endl;
     pub_snd_span->End();
+
+    id++;
 
     eCAL::Process::SleepMS(sleep_time);
 
