@@ -43,7 +43,7 @@ void InitTracer()
   auto exporter = std::unique_ptr<trace_sdk::SpanExporter>(new opentelemetry::exporter::otlp::OtlpGrpcExporter(options));
   auto processor = trace_sdk::SimpleSpanProcessorFactory::Create(std::move(exporter));
   auto resource = opentelemetry::sdk::resource::Resource::Create(
-      opentelemetry::sdk::resource::ResourceAttributes{{"service.name", "publisher"}});
+      opentelemetry::sdk::resource::ResourceAttributes{{"service.name", "PubSubService"}});
   std::shared_ptr<opentelemetry::trace::TracerProvider> provider =
       trace_sdk::TracerProviderFactory::Create(std::move(processor), resource);
 
@@ -110,7 +110,7 @@ int main(int argc, char** argv)
 
 
     // Send the message
-    auto pub_snd_span = get_tracer()->StartSpan(name.c_str());
+    auto pub_snd_span = get_tracer()->StartSpan(appname.c_str());
     auto scope = get_tracer()->WithActiveSpan(pub_snd_span);
     publisher.Send(test_message);
     std::cout << appname << ": Sent message!" << std::endl << std::endl;

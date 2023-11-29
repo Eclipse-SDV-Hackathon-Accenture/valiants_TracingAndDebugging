@@ -43,7 +43,7 @@ void InitTracer()
   auto exporter = std::unique_ptr<trace_sdk::SpanExporter>(new opentelemetry::exporter::otlp::OtlpGrpcExporter(options));
   auto processor = trace_sdk::SimpleSpanProcessorFactory::Create(std::move(exporter));
   auto resource = opentelemetry::sdk::resource::Resource::Create(
-      opentelemetry::sdk::resource::ResourceAttributes{{"service.name", "subscriber"}, {"service.instance.id", name}});
+      opentelemetry::sdk::resource::ResourceAttributes{{"service.name", "PubSubService"}, {"service.instance.id", name}});
   std::shared_ptr<trace_api::TracerProvider> provider =
       trace_sdk::TracerProviderFactory::Create(std::move(processor), resource);
 
