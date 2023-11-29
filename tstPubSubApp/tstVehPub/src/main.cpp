@@ -111,6 +111,7 @@ int main(int argc, char** argv)
 
     // Send the message
     auto pub_snd_span = get_tracer()->StartSpan(appname.c_str());
+    pub_snd_span->AddEvent(appname + ": sending id " + std::to_string(id));
     auto scope = get_tracer()->WithActiveSpan(pub_snd_span);
     publisher.Send(test_message);
     std::cout << appname << ": Sent message!" << std::endl << std::endl;
