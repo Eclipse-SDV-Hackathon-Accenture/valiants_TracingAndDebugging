@@ -40,7 +40,8 @@ RUN cd /
 
 RUN echo "#!/usr/bin/bash" >> startup.sh
 RUN echo "./usr/local/bin/tstVehPub &" >> startup.sh
-RUN echo "./usr/local/bin/tstVehSub" >> startup.sh
+RUN echo "./usr/local/bin/tstVehSub 1 &" >> startup.sh
+RUN echo "./usr/local/bin/tstVehSub 2" >> startup.sh
 RUN chmod a+x startup.sh
 EXPOSE 4317
 ENTRYPOINT [""]

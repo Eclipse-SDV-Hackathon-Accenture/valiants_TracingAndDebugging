@@ -23,6 +23,8 @@ namespace trace_sdk      = opentelemetry::sdk::trace;
 namespace nostd = opentelemetry::nostd;
 // namespace trace_exporter = opentelemetry::exporter::trace;
 
+std::string name = "Protobuf Subscriber";
+
 nostd::shared_ptr<trace_api::Tracer> get_tracer()
 {
   auto provider = trace_api::Provider::GetTracerProvider();
@@ -59,7 +61,7 @@ void TstCallback(const proto_messages::TestMessage& tst_message)
 {
   auto sub_rec_span = get_tracer()->StartSpan("SubscriberRecMessage");
   auto scope = get_tracer()->WithActiveSpan(sub_rec_span);
-  std::cout << tst_message.name() << " sent a message with ID "
+  std::cout << name << ": " << tst_message.name() << " sent a message with ID "
             << tst_message.id() << ":" << std::endl
             << tst_message.msg() << std::endl << std::endl;
 
@@ -70,9 +72,11 @@ void TstCallback(const proto_messages::TestMessage& tst_message)
 
 int main(int argc, char** argv)
 {
+  if (argc > 1)
+	  name += std::string(argv[1]);
 
   // Initialize eCAL and create a protobuf subscriber
-  eCAL::Initialize(argc, argv, "Protobuf Subscriber");
+  eCAL::Initialize(argc, argv, name.c_str());
   eCAL::protobuf::CSubscriber<proto_messages::TestMessage> subscriber("test_message_protobuf");
 
   // Set the Callback
