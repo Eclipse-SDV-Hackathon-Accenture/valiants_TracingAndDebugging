@@ -39,9 +39,9 @@ RUN cd /tstPubSubApp/tstVehSub/ \
 RUN cd /
 
 RUN echo "#!/usr/bin/bash" >> startup.sh
-RUN echo "./usr/local/bin/tstVehPub &" >> startup.sh
-RUN echo "./usr/local/bin/tstVehSub 1 &" >> startup.sh
-RUN echo "./usr/local/bin/tstVehSub 2" >> startup.sh
+RUN echo "./usr/local/bin/tstVehPub 1 1000 &" >> startup.sh
+RUN echo "./usr/local/bin/tstVehSub 1 500 &" >> startup.sh
+RUN echo "./usr/local/bin/tstVehSub 2 1500" >> startup.sh
 RUN chmod a+x startup.sh
 EXPOSE 4317
 ENTRYPOINT [""]

@@ -24,6 +24,7 @@ namespace nostd = opentelemetry::nostd;
 // namespace trace_exporter = opentelemetry::exporter::trace;
 
 std::string name = "Protobuf Subscriber";
+int sleep_time = 500;
 
 nostd::shared_ptr<trace_api::Tracer> get_tracer()
 {
@@ -65,8 +66,7 @@ void TstCallback(const proto_messages::TestMessage& tst_message)
             << tst_message.id() << ":" << std::endl
             << tst_message.msg() << std::endl << std::endl;
 
-   // sleep 100 ms
-  eCAL::Process::SleepMS(2000);
+  eCAL::Process::SleepMS(sleep_time);
   sub_rec_span->End();
 }
 
@@ -74,6 +74,9 @@ int main(int argc, char** argv)
 {
   if (argc > 1)
 	  name += std::string(argv[1]);
+
+  if (argc > 2)
+	  sleep_time = atoi(argv[2]);
 
   // Initialize eCAL and create a protobuf subscriber
   eCAL::Initialize(argc, argv, name.c_str());

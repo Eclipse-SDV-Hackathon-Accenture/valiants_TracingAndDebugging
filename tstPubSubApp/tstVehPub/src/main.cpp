@@ -23,6 +23,9 @@ namespace trace_sdk      = opentelemetry::sdk::trace;
 namespace nostd = opentelemetry::nostd;
 // namespace trace_exporter = opentelemetry::exporter::trace;
 
+std::string appname = "Protobuf Publisher";
+int sleep_time = 500;
+
 nostd::shared_ptr<trace_api::Tracer> get_tracer()
 {
   auto provider = trace_api::Provider::GetTracerProvider();
@@ -58,6 +61,12 @@ void CleanupTracer()
 int main(int argc, char** argv)
 
 {
+
+  if (argc > 1)
+          appname += std::string(argv[1]);
+
+  if (argc > 2)
+          sleep_time = atoi(argv[2]);
 
 
   // Initialize eCAL and create a protobuf publisher
@@ -101,13 +110,13 @@ int main(int argc, char** argv)
 
 
     // Send the message
-    auto pub_snd_span = get_tracer()->StartSpan("PublisherSendMessage");
+    auto pub_snd_span = get_tracer()->StartSpan(name.c_str());
     auto scope = get_tracer()->WithActiveSpan(pub_snd_span);
     publisher.Send(test_message);
-    std::cout << "Sent message!" << std::endl << std::endl;
+    std::cout << appname << ": Sent message!" << std::endl << std::endl;
     pub_snd_span->End();
 
-    eCAL::Process::SleepMS(1000);
+    eCAL::Process::SleepMS(sleep_time);
 
   }
 
