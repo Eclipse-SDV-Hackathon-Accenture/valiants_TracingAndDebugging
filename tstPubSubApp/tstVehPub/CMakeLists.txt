@@ -23,7 +23,7 @@ find_package(gRPC CONFIG REQUIRED)
 
 
 
-set(source_files src/main.cpp src/val_pub.cpp)
+set(source_files src/val_pub.cpp)
 
 
 set(protobuf_files
