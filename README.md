@@ -20,5 +20,5 @@ Open the neew terminal and run publisher/subscriber app:
 
 ```
 docker build -t <container_name>  . 
-docker run --net=host <container_name>  
+docker run -it --net=host <container_name>  
 ```
