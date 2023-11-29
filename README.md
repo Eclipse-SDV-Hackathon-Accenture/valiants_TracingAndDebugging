@@ -3,7 +3,7 @@ team repository for tracing and debugging SDV Hackathon Challenge
 
 ## Prerequisites
 
-Docker is installed
+[Install Docker](https://docs.docker.com/get-docker/)
 
 ## How to run the demo:
 
