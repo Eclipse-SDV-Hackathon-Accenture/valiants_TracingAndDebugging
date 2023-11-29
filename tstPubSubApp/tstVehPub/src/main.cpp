@@ -10,7 +10,7 @@
 #include "opentelemetry/sdk/trace/simple_processor_factory.h"
 #include "opentelemetry/sdk/trace/tracer_provider_factory.h"
 #include "opentelemetry/trace/provider.h"
-
+#include "opentelemetry/sdk/resource/resource.h"
 #include <iostream>
 
 #include <thread>
@@ -39,8 +39,10 @@ void InitTracer()
   options.use_ssl_credentials = false;
   auto exporter = std::unique_ptr<trace_sdk::SpanExporter>(new opentelemetry::exporter::otlp::OtlpGrpcExporter(options));
   auto processor = trace_sdk::SimpleSpanProcessorFactory::Create(std::move(exporter));
-  std::shared_ptr<trace_api::TracerProvider> provider =
-      trace_sdk::TracerProviderFactory::Create(std::move(processor));
+  auto resource = opentelemetry::sdk::resource::Resource::Create(
+      opentelemetry::sdk::resource::ResourceAttributes{{"service.name", "publisher"}});
+  std::shared_ptr<opentelemetry::trace::TracerProvider> provider =
+      trace_sdk::TracerProviderFactory::Create(std::move(processor), resource);
 
   // Set the global trace provider
   trace_api::Provider::SetTracerProvider(provider);
