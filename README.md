@@ -7,14 +7,14 @@ Docker is installed
 
 ## How to run the demo:
 
-1. Jaeger Trace service
+1. Start Jaeger Trace service
 
 Open the new terminal and run:
 ```
 ./start_jaeger.sh
 ```
 
-2. Publisher and subscriber app
+2. Start publisher and subscriber app
 
 Open the neew terminal and run publisher/subscriber app:
 
