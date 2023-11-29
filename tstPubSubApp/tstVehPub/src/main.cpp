@@ -26,7 +26,7 @@ namespace nostd = opentelemetry::nostd;
 nostd::shared_ptr<trace_api::Tracer> get_tracer()
 {
   auto provider = trace_api::Provider::GetTracerProvider();
-  return provider->GetTracer("PublishTest", OPENTELEMETRY_SDK_VERSION);
+  return provider->GetTracer("PublisherTracer", OPENTELEMETRY_SDK_VERSION);
 }
 
 namespace
@@ -39,7 +39,7 @@ void InitTracer()
   options.use_ssl_credentials = false;
   auto exporter = std::unique_ptr<trace_sdk::SpanExporter>(new opentelemetry::exporter::otlp::OtlpGrpcExporter(options));
   auto processor = trace_sdk::SimpleSpanProcessorFactory::Create(std::move(exporter));
-  std::shared_ptr<opentelemetry::trace::TracerProvider> provider =
+  std::shared_ptr<trace_api::TracerProvider> provider =
       trace_sdk::TracerProviderFactory::Create(std::move(processor));
 
   // Set the global trace provider
@@ -48,7 +48,7 @@ void InitTracer()
 
 void CleanupTracer()
 {
-  std::shared_ptr<opentelemetry::trace::TracerProvider> none;
+  std::shared_ptr<trace_api::TracerProvider> none;
   trace_api::Provider::SetTracerProvider(none);
 }
 }
@@ -56,9 +56,6 @@ void CleanupTracer()
 int main(int argc, char** argv)
 
 {
-  // Initialize opentelemetry
-  auto provider = opentelemetry::trace::Provider::GetTracerProvider();
-  auto tracer = provider->GetTracer("foo_library", "1.0.0");
 
   //creates a span and sets its name
   auto span = tracer->StartSpan("PublisherTrace");
@@ -110,12 +107,11 @@ int main(int argc, char** argv)
 
 
     // Send the message
-
+    auto pub_snd_span = get_tracer()->StartSpan("PublisherSendMessage");
+    auto scope = get_tracer()->WithActiveSpan(pub_snd_span);
     publisher.Send(test_message);
-
-
     std::cout << "Sent message!" << std::endl << std::endl;
-    auto scoped_span = trace_api::Scope(get_tracer()->StartSpan("PublisherTest"));
+    pub_snd_span->End();
 
     eCAL::Process::SleepMS(1000);
 
