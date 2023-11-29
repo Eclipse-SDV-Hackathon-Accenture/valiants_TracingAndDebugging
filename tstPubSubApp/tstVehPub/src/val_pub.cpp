@@ -1,12 +1,11 @@
 #include <ecal/ecal.h>
 #include <ecal/msg/protobuf/publisher.h>
 
-#include "opentelemetry/exporters/otlp/otlp_grpc_exporter.h"
-#include "opentelemetry/exporters/otlp/otlp_grpc_exporter_options.h"
-// #include "opentelemetry/exporters/ostream/span_exporter_factory.h"
 #include <iostream>
 #include <thread>
 
+#include "opentelemetry/exporters/otlp/otlp_grpc_exporter.h"
+#include "opentelemetry/exporters/otlp/otlp_grpc_exporter_options.h"
 #include "opentelemetry/sdk/resource/resource.h"
 #include "opentelemetry/sdk/trace/exporter.h"
 #include "opentelemetry/sdk/trace/processor.h"
@@ -20,7 +19,6 @@
 namespace trace_api = opentelemetry::trace;
 namespace trace_sdk = opentelemetry::sdk::trace;
 namespace nostd = opentelemetry::nostd;
-// namespace trace_exporter = opentelemetry::exporter::trace;
 
 std::string appname = "Protobuf Publisher";
 int sleep_time = 500;
@@ -32,7 +30,6 @@ nostd::shared_ptr<trace_api::Tracer> get_tracer() {
 
 namespace {
 void InitTracer() {
-  // auto exporter  = trace_exporter::OStreamSpanExporterFactory::Create();
   opentelemetry::exporter::otlp::OtlpGrpcExporterOptions options;
   options.endpoint = "http://localhost:4317";
   options.use_ssl_credentials = false;
