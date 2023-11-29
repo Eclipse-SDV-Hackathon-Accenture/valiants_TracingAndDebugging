@@ -59,7 +59,7 @@ void CleanupTracer()
 
 void TstCallback(const proto_messages::TestMessage& tst_message)
 {
-  auto sub_rec_span = get_tracer()->StartSpan("SubscriberRecMessage");
+  auto sub_rec_span = get_tracer()->StartSpan(name);
   auto scope = get_tracer()->WithActiveSpan(sub_rec_span);
   std::cout << name << ": " << tst_message.name() << " sent a message with ID "
             << tst_message.id() << ":" << std::endl
