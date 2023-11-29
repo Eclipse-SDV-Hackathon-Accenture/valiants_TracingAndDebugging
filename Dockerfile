@@ -25,13 +25,13 @@ RUN git clone https://github.com/niktolis/ecal.git \
     && make -j4 && cpack -G DEB && dpkg -i _deploy/eCAL-* && ldconfig && cd ../..
 
 
-RUN git clone https://github.com/Eclipse-SDV-Hackathon-Accenture/valiants_TracingAndDebugging.git \
-    && cd /valiants_TracingAndDebugging/tstPubSubApp/tstVehPub/ \
+COPY ./tstPubSubApp /tstPubSubApp
+RUN cd /tstPubSubApp/tstVehPub/ \
     && mkdir -p build && cd build \
     && cmake .. \
     && make -j$(nproc || sysctl -n hw.ncpu || echo 1) install 
 
-RUN cd /valiants_TracingAndDebugging/tstPubSubApp/tstVehSub/ \
+RUN cd /tstPubSubApp/tstVehSub/ \
     && mkdir -p build && cd build \
     && cmake .. \
     && make -j$(nproc || sysctl -n hw.ncpu || echo 1) install 
