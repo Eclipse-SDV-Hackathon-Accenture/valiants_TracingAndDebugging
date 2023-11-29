@@ -2,7 +2,9 @@
 
 #include <ecal/msg/protobuf/publisher.h>
 
-#include "opentelemetry/exporters/ostream/span_exporter_factory.h"
+#include "opentelemetry/exporters/otlp/otlp_grpc_exporter.h"
+#include "opentelemetry/exporters/otlp/otlp_grpc_exporter_options.h"
+// #include "opentelemetry/exporters/ostream/span_exporter_factory.h"
 #include "opentelemetry/sdk/trace/exporter.h"
 #include "opentelemetry/sdk/trace/processor.h"
 #include "opentelemetry/sdk/trace/simple_processor_factory.h"
@@ -18,13 +20,24 @@
 
 namespace trace_api      = opentelemetry::trace;
 namespace trace_sdk      = opentelemetry::sdk::trace;
-namespace trace_exporter = opentelemetry::exporter::trace;
+namespace nostd = opentelemetry::nostd;
+// namespace trace_exporter = opentelemetry::exporter::trace;
+
+nostd::shared_ptr<trace_api::Tracer> get_tracer()
+{
+  auto provider = trace_api::Provider::GetTracerProvider();
+  return provider->GetTracer("PublishTest", OPENTELEMETRY_SDK_VERSION);
+}
 
 namespace
 {
 void InitTracer()
 {
-  auto exporter  = trace_exporter::OStreamSpanExporterFactory::Create();
+  // auto exporter  = trace_exporter::OStreamSpanExporterFactory::Create();
+  opentelemetry::exporter::otlp::OtlpGrpcExporterOptions options;
+  options.endpoint = "http://localhost:4317";
+  options.use_ssl_credentials = false;
+  auto exporter = std::unique_ptr<trace_sdk::SpanExporter>(new opentelemetry::exporter::otlp::OtlpGrpcExporter(options));
   auto processor = trace_sdk::SimpleSpanProcessorFactory::Create(std::move(exporter));
   std::shared_ptr<opentelemetry::trace::TracerProvider> provider =
       trace_sdk::TracerProviderFactory::Create(std::move(processor));
@@ -91,7 +104,9 @@ int main(int argc, char** argv)
 
     publisher.Send(test_message);
 
+
     std::cout << "Sent message!" << std::endl << std::endl;
+    auto scoped_span = trace_api::Scope(get_tracer()->StartSpan("PublisherTest"));
 
     eCAL::Process::SleepMS(1000);
 
