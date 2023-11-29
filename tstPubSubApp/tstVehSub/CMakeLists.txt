@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.0)
 set(CMAKE_FIND_PACKAGE_PREFER_CONFIG ON)
 
 
-project(tstPubSubApp)
+project(tstVehSub)
 
 
 set(CMAKE_CXX_STANDARD 14)
@@ -39,3 +39,5 @@ target_link_libraries(${PROJECT_NAME}
   protobuf::libprotobuf
 
 )
+
+install(TARGETS tstVehSub DESTINATION bin)
