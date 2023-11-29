@@ -2,6 +2,12 @@
 
 #include <ecal/msg/protobuf/publisher.h>
 
+#include "opentelemetry/exporters/ostream/span_exporter_factory.h"
+#include "opentelemetry/sdk/trace/exporter.h"
+#include "opentelemetry/sdk/trace/processor.h"
+#include "opentelemetry/sdk/trace/simple_processor_factory.h"
+#include "opentelemetry/sdk/trace/tracer_provider_factory.h"
+#include "opentelemetry/trace/provider.h"
 
 #include <iostream>
 
@@ -10,10 +16,36 @@
 
 #include "test_message.pb.h"
 
+namespace trace_api      = opentelemetry::trace;
+namespace trace_sdk      = opentelemetry::sdk::trace;
+namespace trace_exporter = opentelemetry::exporter::trace;
+
+namespace
+{
+void InitTracer()
+{
+  auto exporter  = trace_exporter::OStreamSpanExporterFactory::Create();
+  auto processor = trace_sdk::SimpleSpanProcessorFactory::Create(std::move(exporter));
+  std::shared_ptr<opentelemetry::trace::TracerProvider> provider =
+      trace_sdk::TracerProviderFactory::Create(std::move(processor));
+
+  // Set the global trace provider
+  trace_api::Provider::SetTracerProvider(provider);
+}
+
+void CleanupTracer()
+{
+  std::shared_ptr<opentelemetry::trace::TracerProvider> none;
+  trace_api::Provider::SetTracerProvider(none);
+}
+}
 
 int main(int argc, char** argv)
 
 {
+  // Initialize opentelemetry
+  auto provider = opentelemetry::trace::Provider::GetTracerProvider();
+  auto tracer = provider->GetTracer("foo_library", "1.0.0");
 
   // Initialize eCAL and create a protobuf publisher
 
@@ -35,6 +67,7 @@ int main(int argc, char** argv)
   // Infinite loop (using eCAL::Ok() will enable us to gracefully shutdown the
 
   // Process from another application)
+  InitTracer();
 
   while (eCAL::Ok())
 
@@ -68,5 +101,6 @@ int main(int argc, char** argv)
   // finalize eCAL API
 
   eCAL::Finalize();
+  CleanupTracer();
 
 }
