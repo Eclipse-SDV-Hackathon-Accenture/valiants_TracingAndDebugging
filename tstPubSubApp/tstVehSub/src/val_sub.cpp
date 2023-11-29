@@ -25,6 +25,8 @@ namespace nostd = opentelemetry::nostd;
 
 std::string name = "Protobuf Subscriber";
 int sleep_time = 500;
+int arc_thr = 2;
+int prev_msg_id = -1;
 
 nostd::shared_ptr<trace_api::Tracer> get_tracer()
 {
@@ -61,7 +63,17 @@ void CleanupTracer()
 void TstCallback(const proto_messages::TestMessage& tst_message)
 {
   auto sub_rec_span = get_tracer()->StartSpan(name);
-  sub_rec_span->AddEvent(name + ": received id " + std::to_string(tst_message.id()));
+  if ((tst_message.id() - prev_msg_id < arc_thr) || prev_msg_id == -1)
+  {
+    sub_rec_span->SetStatus(trace_api::StatusCode::kOk);
+  }
+  else
+  {
+    sub_rec_span->SetStatus(trace_api::StatusCode::kError);
+  }
+  prev_msg_id = tst_message.id();
+  sub_rec_span->AddEvent(name + ": received id " +
+                           std::to_string(tst_message.id()));
   auto scope = get_tracer()->WithActiveSpan(sub_rec_span);
   std::cout << name << ": " << tst_message.name() << " sent a message with ID "
             << tst_message.id() << ":" << std::endl
@@ -79,8 +91,11 @@ int main(int argc, char** argv)
   if (argc > 2)
 	  sleep_time = atoi(argv[2]);
 
-  // Initialize eCAL and create a protobuf subscriber
-  eCAL::Initialize(argc, argv, name.c_str());
+  if (argc > 3)
+    arc_thr = atoi(argv[3]);
+
+        // Initialize eCAL and create a protobuf subscriber
+        eCAL::Initialize(argc, argv, name.c_str());
   eCAL::protobuf::CSubscriber<proto_messages::TestMessage> subscriber("test_message_protobuf");
 
   // Set the Callback

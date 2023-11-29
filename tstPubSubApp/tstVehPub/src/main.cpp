@@ -5,16 +5,17 @@
 #include "opentelemetry/exporters/otlp/otlp_grpc_exporter.h"
 #include "opentelemetry/exporters/otlp/otlp_grpc_exporter_options.h"
 // #include "opentelemetry/exporters/ostream/span_exporter_factory.h"
+#include <iostream>
+#include <thread>
+
+#include "opentelemetry/sdk/resource/resource.h"
 #include "opentelemetry/sdk/trace/exporter.h"
 #include "opentelemetry/sdk/trace/processor.h"
 #include "opentelemetry/sdk/trace/simple_processor_factory.h"
 #include "opentelemetry/sdk/trace/tracer_provider_factory.h"
+#include "opentelemetry/trace/context.h"
 #include "opentelemetry/trace/provider.h"
-#include "opentelemetry/sdk/resource/resource.h"
-#include <iostream>
-
-#include <thread>
-
+#include "opentelemetry/trace/semantic_conventions.h"
 
 #include "test_message.pb.h"
 
@@ -113,6 +114,7 @@ int main(int argc, char** argv)
     auto pub_snd_span = get_tracer()->StartSpan(appname.c_str());
     pub_snd_span->AddEvent(appname + ": sending id " + std::to_string(id));
     auto scope = get_tracer()->WithActiveSpan(pub_snd_span);
+    pub_snd_span->SetStatus(trace_api::StatusCode::kOk);
     publisher.Send(test_message);
     std::cout << appname << ": Sent message!" << std::endl << std::endl;
     pub_snd_span->End();

@@ -1,12 +1,12 @@
 FROM ubuntu:22.04
 RUN apt-get update
-RUN apt-get install -y git g++ file cmake doxygen graphviz build-essential zlib1g-dev qtbase5-dev libhdf5-dev libcurl4-openssl-dev libqwt-qt5-dev libyaml-cpp-dev  
+RUN apt-get install -y git g++ file cmake doxygen graphviz build-essential zlib1g-dev qtbase5-dev libhdf5-dev libcurl4-openssl-dev libqwt-qt5-dev libyaml-cpp-dev
 
 RUN git clone --recurse-submodules -b v1.49.2 --depth 1 --shallow-submodules https://github.com/grpc/grpc \
     && cd grpc/cmake && mkdir _build && cd _build \
     && cmake -DgRPC_INSTALL=ON \
         -DgRPC_BUILD_TESTS=OFF \
-        ../.. && make -j4 && make install 
+        ../.. && make -j4 && make install
 
 ARG OPENTELEMETRY_CPP_VERSION=1.10.0
 RUN git clone https://github.com/open-telemetry/opentelemetry-cpp \
@@ -29,19 +29,20 @@ COPY ./tstPubSubApp /tstPubSubApp
 RUN cd /tstPubSubApp/tstVehPub/ \
     && mkdir -p build && cd build \
     && cmake .. \
-    && make -j$(nproc || sysctl -n hw.ncpu || echo 1) install 
+    && make -j$(nproc || sysctl -n hw.ncpu || echo 1) install
 
 RUN cd /tstPubSubApp/tstVehSub/ \
     && mkdir -p build && cd build \
     && cmake .. \
-    && make -j$(nproc || sysctl -n hw.ncpu || echo 1) install 
+    && make -j$(nproc || sysctl -n hw.ncpu || echo 1) install
 
 RUN cd /
 
 RUN echo "#!/usr/bin/bash" >> startup.sh
 RUN echo "./usr/local/bin/tstVehPub 1 1000 &" >> startup.sh
-RUN echo "./usr/local/bin/tstVehSub 1 500 &" >> startup.sh
-RUN echo "./usr/local/bin/tstVehSub 2 1500" >> startup.sh
+RUN echo "./usr/local/bin/tstVehSub 1 500 1 &" >> startup.sh
+RUN echo "./usr/local/bin/tstVehSub 2 1500 4 &" >> startup.sh
+RUN echo "./usr/local/bin/tstVehSub 3 800 2" >> startup.sh
 RUN chmod a+x startup.sh
 EXPOSE 4317
 ENTRYPOINT [""]
