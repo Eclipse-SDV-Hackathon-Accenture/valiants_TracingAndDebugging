@@ -40,7 +40,7 @@ void InitTracer() {
       trace_sdk::SimpleSpanProcessorFactory::Create(std::move(exporter));
   auto resource = opentelemetry::sdk::resource::Resource::Create(
       opentelemetry::sdk::resource::ResourceAttributes{
-          {"service.name", "PubSubService"}, {"service.instance.id", name}});
+          {"service.name", "Valiants"}, {"service.instance.id", name}});
   std::shared_ptr<trace_api::TracerProvider> provider =
       trace_sdk::TracerProviderFactory::Create(std::move(processor), resource);
 
