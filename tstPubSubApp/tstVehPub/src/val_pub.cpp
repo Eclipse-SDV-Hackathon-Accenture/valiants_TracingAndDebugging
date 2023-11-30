@@ -97,6 +97,7 @@ int main(int argc, char** argv)
     // Send the message
     auto pub_snd_span = get_tracer()->StartSpan(appname.c_str());
     pub_snd_span->AddEvent(appname + ": sending id " + std::to_string(id));
+    pub_snd_span->SetAttribute("id", id);
     auto scope = get_tracer()->WithActiveSpan(pub_snd_span);
     pub_snd_span->SetStatus(trace_api::StatusCode::kOk);
     publisher.Send(test_message);

@@ -64,6 +64,7 @@ void TstCallback(const proto_messages::TestMessage& tst_message) {
   prev_msg_id = tst_message.id();
   sub_rec_span->AddEvent(name + ": received id " +
                          std::to_string(tst_message.id()));
+  sub_rec_span->SetAttribute("id", tst_message.id());
   auto scope = get_tracer()->WithActiveSpan(sub_rec_span);
   std::cout << name << ": " << tst_message.name() << " sent a message with ID "
             << tst_message.id() << ":" << std::endl
