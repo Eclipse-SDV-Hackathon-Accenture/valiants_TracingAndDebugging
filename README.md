@@ -9,14 +9,14 @@ team repository for tracing and debugging SDV Hackathon Challenge
 
 1. Start Jaeger Trace service
 
-Open the new terminal and run:
+Open a new terminal and run:
 ```
 ./start_jaeger.sh
 ```
 
 2. Start publisher and subscriber app
 
-Open the neew terminal and run publisher/subscriber app:
+Open a new terminal and run publisher/subscriber app:
 
 ```
 docker build -t <container_name>  . 
